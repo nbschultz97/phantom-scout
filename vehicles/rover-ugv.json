@@ -1,0 +1,52 @@
+{
+    "name": "UGV Rover",
+    "description": "Ground vehicle for RAPTOR ground autonomy. Traxxas-class RC platform.",
+    "type": "rover",
+    "frame": "rover",
+    "sitl_frame": "rover",
+    "gazebo_model": "rover",
+
+    "physical": {
+        "mass_kg": 4.0,
+        "wheelbase_m": 0.33,
+        "track_width_m": 0.30,
+        "wheel_diameter_m": 0.10,
+        "max_speed_ms": 5.0,
+        "battery_cells": 3,
+        "battery_mah": 5000
+    },
+
+    "ardupilot_params": {
+        "FRAME_CLASS": 1,
+        "FRAME_TYPE": 0,
+        "CRUISE_SPEED": 3.0,
+        "CRUISE_THROTTLE": 40,
+        "ATC_STR_RAT_P": 0.2,
+        "ATC_STR_RAT_I": 0.2,
+        "ATC_STR_RAT_D": 0.01,
+        "ATC_SPEED_P": 0.3,
+        "ATC_SPEED_I": 0.3,
+        "ATC_SPEED_D": 0.0,
+        "WP_SPEED": 3.0,
+        "WP_RADIUS": 1.0,
+        "TURN_RADIUS": 0.5,
+        "NAVL1_PERIOD": 8,
+        "MOT_SLEWRATE": 100
+    },
+
+    "camera": {
+        "type": "forward-fixed",
+        "fov_degrees": 90,
+        "resolution": "640x480",
+        "fps": 30,
+        "height_m": 0.25,
+        "tilt_degrees": -10
+    },
+
+    "companion": {
+        "type": "jetson",
+        "ai_workload": "raptor",
+        "connection": "serial",
+        "baud": 921600
+    }
+}

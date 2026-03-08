@@ -1,0 +1,85 @@
+# Ceradon Sim — Target Track Scenario
+# Tests: AI detects and tracks a moving target
+#
+# Expected behavior:
+# 1. Vehicle takes off / starts moving
+# 2. AI detects target via simulated camera
+# 3. Vehicle follows target maintaining lock
+# 4. Scenario passes if target tracked for >30 seconds continuously
+
+name: target_track
+description: "Track a moving target through an urban environment"
+vehicle: copter-10inch
+world: urban-search
+
+# Initial conditions
+start:
+  position: [0, 0, 0]
+  heading: 0
+  mode: GUIDED
+  armed: true
+
+# Target behavior
+targets:
+  - name: target_person_1
+    type: person
+    start_position: [15, 5, 0]
+    behavior: patrol
+    patrol_points:
+      - [15, 5, 0]
+      - [25, 10, 0]
+      - [20, -5, 0]
+      - [10, 0, 0]
+    speed_ms: 1.5  # Walking speed
+
+# Mission steps
+steps:
+  - action: takeoff
+    altitude: 15
+    timeout_s: 30
+
+  - action: goto
+    position: [15, 5, 15]  # Fly to target area
+    timeout_s: 60
+
+  - action: wait_detection
+    target: target_person_1
+    timeout_s: 30
+    description: "Wait for AI to detect the target"
+
+  - action: track
+    target: target_person_1
+    duration_s: 60
+    max_distance_m: 50
+    description: "Track target for 60 seconds"
+
+# Pass/fail criteria
+success_criteria:
+  - type: continuous_track
+    target: target_person_1
+    min_duration_s: 30
+    max_loss_count: 3
+
+  - type: no_crash
+    description: "Vehicle must not crash"
+
+  - type: altitude_maintained
+    min_alt: 10
+    max_alt: 30
+
+failure_criteria:
+  - type: timeout
+    max_duration_s: 180
+
+  - type: geofence
+    radius_m: 200
+    description: "Vehicle must stay within 200m of start"
+
+# Telemetry to record
+record:
+  - heartbeat
+  - global_position_int
+  - attitude
+  - vfr_hud
+  - battery_status
+  - ai_detections  # Custom RAPTOR detection log

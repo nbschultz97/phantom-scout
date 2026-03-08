@@ -1,0 +1,148 @@
+<?xml version="1.0" ?>
+<!--
+  Ceradon Sim — Urban Search World
+  City blocks with buildings, streets, and target objects.
+  For search, track, and target engagement validation.
+-->
+<sdf version="1.9">
+  <world name="ceradon_urban_search">
+
+    <!-- Physics -->
+    <physics name="1ms" type="ignore">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <!-- Sun -->
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+    <!-- Ground Plane (asphalt) -->
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>500 500</size>
+            </plane>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>500 500</size>
+            </plane>
+          </geometry>
+          <material>
+            <ambient>0.3 0.3 0.3 1</ambient>
+            <diffuse>0.3 0.3 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Building 1 -->
+    <model name="building_1">
+      <static>true</static>
+      <pose>20 10 5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>10 8 10</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>10 8 10</size></box></geometry>
+          <material>
+            <ambient>0.6 0.5 0.4 1</ambient>
+            <diffuse>0.6 0.5 0.4 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Building 2 -->
+    <model name="building_2">
+      <static>true</static>
+      <pose>-15 20 7.5 0 0 0.3</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>12 6 15</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>12 6 15</size></box></geometry>
+          <material>
+            <ambient>0.5 0.5 0.6 1</ambient>
+            <diffuse>0.5 0.5 0.6 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Building 3 -->
+    <model name="building_3">
+      <static>true</static>
+      <pose>30 -20 4 0 0 -0.2</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>8 8 8</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>8 8 8</size></box></geometry>
+          <material>
+            <ambient>0.7 0.6 0.5 1</ambient>
+            <diffuse>0.7 0.6 0.5 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Target: Person (standing) -->
+    <model name="target_person_1">
+      <static>true</static>
+      <pose>15 5 0.9 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><cylinder><radius>0.3</radius><length>1.8</length></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><cylinder><radius>0.3</radius><length>1.8</length></geometry>
+          <material>
+            <ambient>0.8 0.2 0.2 1</ambient>
+            <diffuse>0.8 0.2 0.2 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Target: Vehicle -->
+    <model name="target_vehicle_1">
+      <static>true</static>
+      <pose>-5 -10 0.75 0 0 0.5</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>4.5 2 1.5</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>4.5 2 1.5</size></box></geometry>
+          <material>
+            <ambient>0.2 0.3 0.5 1</ambient>
+            <diffuse>0.2 0.3 0.5 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ArduPilot Plugin -->
+    <plugin filename="ArduPilotPlugin"
+            name="ardupilot_gazebo::ArduPilotPlugin">
+    </plugin>
+
+  </world>
+</sdf>

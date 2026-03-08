@@ -1,0 +1,26 @@
+# Camera Bridge — Converts Gazebo camera topic to RTSP stream
+# Your AI code connects to this just like a real camera
+
+FROM python:3.11-slim
+
+RUN apt-get update && apt-get install -y \
+    ffmpeg \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --no-cache-dir \
+    opencv-python-headless \
+    numpy \
+    pymavlink \
+    aiortc \
+    aiohttp
+
+WORKDIR /app
+COPY ../bridge/ /app/
+
+EXPOSE 8554
+
+CMD ["python3", "camera_bridge.py"]

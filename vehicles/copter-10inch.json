@@ -1,0 +1,58 @@
+{
+    "name": "10-inch Heavy-Lift Quadcopter",
+    "description": "Payload-carrying quad for AI/RAPTOR integration. ~2kg AUW with payload.",
+    "type": "copter",
+    "frame": "quad",
+    "sitl_frame": "quad",
+    "gazebo_model": "iris",
+
+    "physical": {
+        "mass_kg": 2.0,
+        "arm_length_m": 0.25,
+        "prop_diameter_inch": 10,
+        "motor_kv": 900,
+        "battery_cells": 6,
+        "battery_mah": 5000,
+        "max_thrust_per_motor_n": 18.0,
+        "payload_kg": 0.5
+    },
+
+    "ardupilot_params": {
+        "FRAME_CLASS": 1,
+        "FRAME_TYPE": 1,
+        "MOT_THST_HOVER": 0.35,
+        "MOT_BAT_VOLT_MAX": 25.2,
+        "MOT_BAT_VOLT_MIN": 19.8,
+        "INS_GYRO_FILTER": 40,
+        "INS_ACCEL_FILTER": 20,
+        "ATC_RAT_RLL_P": 0.09,
+        "ATC_RAT_RLL_I": 0.09,
+        "ATC_RAT_RLL_D": 0.003,
+        "ATC_RAT_PIT_P": 0.09,
+        "ATC_RAT_PIT_I": 0.09,
+        "ATC_RAT_PIT_D": 0.003,
+        "ATC_RAT_YAW_P": 0.15,
+        "ATC_RAT_YAW_I": 0.015,
+        "ANGLE_MAX": 3500,
+        "PILOT_SPEED_UP": 300,
+        "PILOT_SPEED_DN": 150,
+        "WPNAV_SPEED": 800,
+        "WPNAV_SPEED_DN": 150,
+        "WPNAV_SPEED_UP": 250
+    },
+
+    "camera": {
+        "type": "gimbal",
+        "fov_degrees": 90,
+        "resolution": "1920x1080",
+        "fps": 30,
+        "tilt_range": [-90, 0]
+    },
+
+    "companion": {
+        "type": "jetson",
+        "ai_workload": "raptor",
+        "connection": "serial",
+        "baud": 921600
+    }
+}

@@ -1,0 +1,86 @@
+# Ceradon Sim — One-command launch
+# Usage: docker compose up
+# Connects: Mission Planner on localhost:5762, Camera on rtsp://localhost:8554/fpv
+
+version: '3.8'
+
+services:
+  # ArduPilot SITL — simulates the flight controller firmware
+  sitl:
+    build:
+      context: .
+      dockerfile: Dockerfile.sitl
+    container_name: ceradon-sitl
+    environment:
+      - VEHICLE=${VEHICLE:-copter}
+      - VEHICLE_FRAME=${VEHICLE_FRAME:-quad}
+      - SPEEDUP=${SPEEDUP:-1}
+      - SIM_HOME_LAT=${SIM_HOME_LAT:-40.7608}
+      - SIM_HOME_LON=${SIM_HOME_LON:--111.8910}
+      - SIM_HOME_ALT=${SIM_HOME_ALT:-1288}
+      - SIM_HOME_HDG=${SIM_HOME_HDG:-0}
+    ports:
+      # MAVLink outputs — connect companion computer or GCS here
+      - "5760:5760"   # MAVProxy console
+      - "5762:5762"   # GCS (Mission Planner)
+      - "14550:14550" # Companion computer (UDP)
+      - "14551:14551" # Additional MAVLink consumer
+    networks:
+      - simnet
+    volumes:
+      - ../vehicles:/vehicles:ro
+      - sitl-params:/ardupilot/params
+
+  # Gazebo — 3D physics simulation + sensor simulation
+  gazebo:
+    build:
+      context: .
+      dockerfile: Dockerfile.gazebo
+    container_name: ceradon-gazebo
+    environment:
+      - WORLD=${WORLD:-empty}
+      - DISPLAY=${DISPLAY:-:0}
+      - VEHICLE_MODEL=${VEHICLE_MODEL:-iris}
+    ports:
+      - "11345:11345" # Gazebo transport
+    networks:
+      - simnet
+    volumes:
+      - ../worlds:/worlds:ro
+      - ../models:/models:ro
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw  # GUI passthrough (optional)
+    depends_on:
+      - sitl
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  # Camera Bridge — converts Gazebo camera topic to RTSP/OpenCV-compatible stream
+  camera-bridge:
+    build:
+      context: .
+      dockerfile: Dockerfile.bridge
+    container_name: ceradon-camera-bridge
+    environment:
+      - CAMERA_TOPIC=/gazebo/camera/image_raw
+      - RTSP_PORT=8554
+      - STREAM_NAME=fpv
+      - RESOLUTION=${CAMERA_RES:-640x480}
+      - FPS=${CAMERA_FPS:-30}
+    ports:
+      - "8554:8554"  # RTSP stream — your AI connects here
+    networks:
+      - simnet
+    depends_on:
+      - gazebo
+
+networks:
+  simnet:
+    driver: bridge
+
+volumes:
+  sitl-params:
